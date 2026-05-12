@@ -1,0 +1,53 @@
+.emp {
+    font-weight: bold;
+    font-size: larger;
+    color: darkblue;
+}
+
+.data {
+    font-weight: bold;
+    font-size: small;
+    color: darkblue;
+}
+
+.red {
+    background-color: pink;
+}
+
+.green {
+    background-color: lightgreen;
+}
+
+.yellow {
+    background-color: lightyellow;
+}
+
+.label {
+    text-align: right;
+}
+
+.safety_data {
+    border: solid;
+    border-color: darkblue;
+    width: 20%;
+    margin: 5px;
+    font-size: small;
+}
+
+.container {
+    width: 1400px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: flex-start;
+}
+
+.over_container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: flex-start;
+}
+button {
+    margin: 15px;
+}

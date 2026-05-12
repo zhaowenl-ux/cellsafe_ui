@@ -1,0 +1,63 @@
+.title{
+    margin-left: 20px;
+    font-weight: bold;
+    font-size: large;
+    color: blueviolet;
+}
+
+.long_select
+{
+    width: 300px;
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+.row {
+  flex: 0 1 auto;  
+  margin-top: 10px;
+  margin-right: 10px;
+}
+
+.column {
+  display: flex;
+  flex-wrap: nowrap;
+}
+
+button {    
+    margin-left: 20px;
+    font-size: small;
+}
+
+.PanelFloat {
+        position: fixed;
+        overflow: scroll;
+        z-index: 2400;
+        opacity: 0.99;
+        left: 30px;
+        width: 500px;
+        height: 400px;
+        background-color: lightblue;
+        top: 100px !important;
+        -webkit-transition: all 0.5s ease-in-out;
+        -moz-transition: all 0.5s ease-in-out;
+        -ms-transition: all 0.5s ease-in-out;
+        -o-transition: all 0.5s ease-in-out;
+        transition: all 0.5s ease-in-out;
+}
+
+.modal{
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 20px;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    opacity: 0.99;
+    overflow: auto; /* Enable scroll if needed */
+    background-color: lightblue;
+    
+    -webkit-animation-name: fadeIn; /* Fade in the background */
+    -webkit-animation-duration: 0.4s;
+    animation-name: fadeIn;
+    animation-duration: 0.4s
+}

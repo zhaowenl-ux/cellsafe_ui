@@ -1,0 +1,37 @@
+<h2>Set {{entity}} Searching Display Fields</h2>
+<div style="display: flex">
+  <div
+    id="source_list"
+    cdkDropList
+    [cdkDropListData]="field"
+    [cdkDropListConnectedTo]="secondList"
+    #firstList="cdkDropList"
+    (cdkDropListDropped)="drop($event)"
+    style="width: 30%">
+    @for (f of source_field; track f) {
+      <div class="pop" cdkDrag>{{lookup_table.get(f)}}</div>
+    }
+  </div>
+  <div
+    id="result_list"
+    cdkDropList
+    [cdkDropListData]="display_field"
+    [cdkDropListConnectedTo]="firstList"
+    #secondList="cdkDropList"
+    (cdkDropListDropped)="drop($event)"
+    style="width: 30%">
+    @for (f of result_field; track f) {
+      <div class="pop" cdkDrag>{{lookup_table.get(f)}}</div>
+    }
+  </div>
+</div>
+<p></p>
+<div>
+  <button mat-raised-button color="primary" (click)="save_pref()">Save Preference</button>
+  @if (action!=null) {
+    <button mat-raised-button color="primary" (click)="apply_pref()">Apply & Close</button>
+  }
+  @if (action!=null) {
+    <button mat-raised-button color="primary" (click)="close()">Cancel & Close</button>
+  }
+</div>

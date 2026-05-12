@@ -1,0 +1,326 @@
+@if (IsWait) {
+  <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+}
+<div style="overflow: auto">
+  <h3 class="title">{{title}}</h3>
+  <div>
+    <mat-form-field>
+      <mat-label>Keyword</mat-label>
+      <input matInput type="text" [(ngModel)]="keyword" (keydown.enter)="search()" />
+      @if (keyword) {
+        <button matSuffix mat-icon-button aria-label="Clear" (click)="keyword=''">
+          <mat-icon>close</mat-icon>
+        </button>
+      }
+    </mat-form-field>
+    <mat-form-field class="long_select">
+      <mat-label>Species</mat-label>
+      <mat-select [(ngModel)]="species">
+        @for (species of species_list; track species.id) {
+          <mat-option [value]="species.id">{{species.name}}</mat-option>
+        }
+      </mat-select>
+      @if (species) {
+        <button matSuffix mat-icon-button aria-label="Clear" (click)="species=null">
+          <mat-icon>close</mat-icon>
+        </button>
+      }
+    </mat-form-field>
+    <mat-form-field style="width: 200px">
+      <mat-label>Gene</mat-label>
+      <input
+        type="text"
+        matInput
+        placeholder="Gene"
+        aria-label="Gene"
+        [formControl]="gene"
+        [matAutocomplete]="auto" />
+      @if (gene.value) {
+        <button matSuffix mat-icon-button aria-label="Clear" (click)="gene.setValue('')">
+          <mat-icon>close</mat-icon>
+        </button>
+      }
+      <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayGene">
+        @for (gene of gene_list ; track gene) {
+          <mat-option [value]="gene"> {{gene.name}} </mat-option>
+        }
+      </mat-autocomplete>
+    </mat-form-field>
+    <mat-form-field class="short_select">
+      <mat-label>Source</mat-label>
+      <input
+        type="text"
+        matInput
+        placeholder="ex. ATCC"
+        aria-label="Cell line source"
+        [formControl]="cell_source"
+        [matAutocomplete]="auto_source" />
+      @if (cell_source.value) {
+        <button matSuffix mat-icon-button aria-label="Clear" (click)="cell_source.setValue(null)">
+          <mat-icon>close</mat-icon>
+        </button>
+      }
+      <mat-autocomplete #auto_source="matAutocomplete" [displayWith]="displaySource">
+        @for (source of cell_source_list ; track source) {
+          <mat-option [value]="source"> {{source.name}} </mat-option>
+        }
+      </mat-autocomplete>
+    </mat-form-field>
+    <mat-form-field class="long_select">
+      <mat-label>Accession Status</mat-label>
+      <mat-select #el_status_control [formControl]="accession_status" multiple>
+        @for (status of accession_status_list; track status) {
+          <mat-option [value]="status">{{status}}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field class="short_select">
+      <mat-label>Tag</mat-label>
+      <mat-select [(ngModel)]="tag">
+        @for (tag of tag_list; track tag.id) {
+          <mat-option [value]="tag.id">{{tag.name}}</mat-option>
+        }
+      </mat-select>
+      @if (tag) {
+        <button matSuffix mat-icon-button aria-label="Clear" (click)="tag=null">
+          <mat-icon>close</mat-icon>
+        </button>
+      }
+    </mat-form-field>
+    <mat-form-field class="short_select">
+      <mat-label>Reporter</mat-label>
+      <mat-select [(ngModel)]="reporter">
+        @for (reporter of reporter_list; track reporter.id) {
+          <mat-option [value]="reporter.id">{{reporter.name}}</mat-option>
+        }
+      </mat-select>
+      @if (reporter) {
+        <button matSuffix mat-icon-button aria-label="Clear" (click)="reporter=null">
+          <mat-icon>close</mat-icon>
+        </button>
+      }
+    </mat-form-field>
+    <mat-form-field class="short_select">
+      <mat-label>Genetically Modified</mat-label>
+      <mat-select #el_gmo [formControl]="gmo" multiple>
+        @for (status of gmo_list; track status) {
+          <mat-option [value]="status">{{status}}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+    <button mat-flat-button (click)="search()" class="sep"><mat-icon>search</mat-icon>Search</button>
+    <button mat-flat-button class="sep" (click)="clear_all()"><mat-icon>clear</mat-icon>Clear</button>
+    <button mat-flat-button class="sep" (click)="set_field()"><mat-icon>settings</mat-icon>Display Fields</button>
+  </div>
+  <div style="display: flex; gap: 20px; vertical-align: middle">
+    <span>
+      <mat-label>Filter</mat-label>
+      <input matInput (keyup)="applyFilter($event)" placeholder="Ex. new" #input />
+    </span>
+    <mat-paginator #paginator [pageSize]="50" [pageSizeOptions]="[20, 50, 100]" [showFirstLastButtons]="true">
+    </mat-paginator>
+  </div>
+<!--mat-label>Filter</mat-label>
+<input matInput (keyup)="applyFilter($event)" placeholder="Ex. new" #input /-->
+<div style="width: 3500px; height: 800px">
+  <mat-table
+    style="width: 100%"
+    class="table-container"
+    #table
+    [dataSource]="dataSource"
+    matSort
+    (matSortChange)="announceSortChange($event)">
+    <ng-container matColumnDef="accession_name" sticky>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Accession</th>
+      <td mat-cell *matCellDef="let element" [ngClass]="{'highlight': row_selected(element.accession_id)}">
+        <mat-menu #menu="matMenu">
+          <button mat-menu-item (click)="accession_edit(element.accession_id, false)">
+            <mat-icon>edit</mat-icon>
+            <span>Edit/View</span>
+          </button>
+          @if (me && (me.admin >0  || me.accession >0)) {
+            <button
+              mat-menu-item
+              (click)="accession_edit(element.accession_id, true)">
+              <mat-icon>file_copy</mat-icon>
+              <span>Clone</span>
+            </button>
+          }
+          @if (me && (me.admin >0 || me.batch >0)) {
+            <button
+              mat-menu-item
+              (click)="accession_addbatch(element.accession_id)">
+              <mat-icon>add</mat-icon>
+              <span>Add New Batch</span>
+            </button>
+          }
+          <!--button mat-menu-item (click)="accession_provenance(element.accession_id)">
+          <mat-icon>copyright</mat-icon>
+          <span>Attach Provenance</span>
+        </button-->
+        @if (me && (me.admin || me.accession) && !element.num_batch) {
+          <mat-divider></mat-divider>
+          <button mat-menu-item (click)="accession_delete(element.accession_id)">
+            <mat-icon>delete</mat-icon>
+            <span>Abandon</span>
+          </button>
+        }
+      </mat-menu>
+
+      @if (manage) {
+        <button
+          mat-icon-button
+          [matMenuTriggerFor]="menu"
+          matTooltip="Click for more actions">
+          <mat-icon>more_vert</mat-icon>
+        </button>
+      }
+      @if (manage) {
+        <button
+          mat-button
+          matTooltip="Click to edit/view the accession details"
+          (click)="accession_edit(element.accession_id)"
+          style="vertical-align: middle">
+          {{element.accession_name}}
+        </button>
+      }
+      @if (!manage) {
+        <span>{{element.accession_name}}</span>
+      }
+    </td>
+  </ng-container>
+  <ng-container matColumnDef="biosafety_id">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header>Biosafety</th>
+    <td mat-cell *matCellDef="let element" [ngClass]="{'highlight': row_selected(element.accession_id)}">
+      @if (manage && element.biosafety_id) {
+        <button
+          mat-button
+          matTooltip="Click to view biosafety information"
+          (click)="view_safety(element.biosafety_id)"
+          style="vertical-align: middle">
+          {{element.biosafety_id}}
+        </button>
+      }
+      @if (!manage && element.biosafety_id) {
+        <span>{{element.biosafety_id}}</span>
+      }
+    </td>
+  </ng-container>
+  <ng-container matColumnDef="cell_name">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header>Cell</th>
+    <td mat-cell *matCellDef="let element" [ngClass]="{'highlight': row_selected(element.accession_id)}">
+      <!--mat-menu #menu="matMenu">
+      <button mat-menu-item (click)="basecell_edit(element.basecell_id)">
+        <mat-icon>edit</mat-icon>
+        <span>Edit</span>
+      </button>
+      <button mat-menu-item (click)="basecell_add(element.basecell_id)">
+        <mat-icon>add</mat-icon>
+        <span>Add Accession</span>
+      </button>
+      <mat-divider *ngIf="IsAdmin"></mat-divider>
+      <button mat-menu-item *ngIf="IsAdmin" (click)="delete(element.basecell_id)">
+        <mat-icon>delete</mat-icon>
+        <span>Delete</span>
+      </button>
+    </mat-menu>
+
+    <button
+      *ngIf="manage"
+      mat-icon-button
+      [matMenuTriggerFor]="menu"
+      matTooltip="Click for more actions">
+      <mat-icon>more_vert</mat-icon>
+    </button-->
+    @if (manage) {
+      <button
+        mat-button
+        matTooltip="Click to edit/view the cell line details"
+        (click)="edit_cell(element.accession_cell_id)"
+        style="vertical-align: middle">
+        {{element.cell_name}}
+      </button>
+    }
+    @if (!manage) {
+      <span>{{element.cell_name}}</span>
+    }
+  </td>
+</ng-container>
+<ng-container matColumnDef="batch_count">
+  <th mat-header-cell *matHeaderCellDef mat-sort-header># Batch</th>
+  <td mat-cell *matCellDef="let element" [ngClass]="{'highlight': row_selected(element.accession_id)}">
+    @if (manage && element.batch_count>0) {
+      <button
+        mat-button
+        matTooltip="Click to view all batches"
+        (click)="view_batch(element.accession_id)"
+        style="vertical-align: middle">
+        {{element.batch_count}}
+      </button>
+    }
+    @if (!manage && element.batch_count>0) {
+      <span>{{element.batch_count}}</span>
+    }
+  </td>
+</ng-container>
+<!--ng-container matColumnDef="provenance_count">
+<th mat-header-cell *matHeaderCellDef mat-sort-header># Provenance</th>
+<td mat-cell *matCellDef="let element" [ngClass]="{'highlight': row_selected(element.accession_id)}">
+  <button
+    *ngIf="manage && element.provenance_count > 0"
+    mat-button
+    matTooltip="Click to view all provenances"
+    (click)="view_provenance(element.accession_id)"
+    style="vertical-align: middle">
+    {{element.provenance_count}}
+  </button>
+  <span *ngIf="!manage && element.provenance_count > 0">{{element.provenance_count}}</span>
+</td>
+</ng-container-->
+@for (column of columns; track column) {
+  <ng-container [matColumnDef]="column.columnDef">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header>{{column.header}}</th>
+    <td mat-cell *matCellDef="let row" [ngClass]="{'highlight': row_selected(row.accession_id)}">
+      {{column.cell(row)}}
+    </td>
+  </ng-container>
+}
+<tr class="mat-row" *matNoDataRow>
+  <td class="mat-cell" colspan="4">No data matching the filter "{{input.value}}"</td>
+</tr>
+<tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true" class="header"></tr>
+<tr
+  mat-row
+  *matRowDef="let element; let even = even; let rowIndex = index; columns: displayedColumns;"
+  [ngClass]="{gray: even}"
+  (click)="mouseClickHandler(rowIndex, element, $event)"
+(dblclick)="select()"></tr>
+<!--tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr-->
+</mat-table>
+
+<!--mat-paginator
+#paginator
+[pageSize]="pagesize"
+[pageSizeOptions]="[10, 20, 50, 100]"
+[showFirstLastButtons]="true">
+</mat-paginator-->
+</div>
+</div>
+<mat-paginator
+  [pageSize]="paginator.pageSize"
+  [length]="paginator.length"
+  [pageIndex]="paginator.pageIndex"
+  [showFirstLastButtons]="paginator.showFirstLastButtons"
+  [pageSizeOptions]="paginator.pageSizeOptions"
+  (page)="paginator.pageIndex=$event.pageIndex;paginator.pageSize=$event.pageSize;paginator.page.emit($event)">
+</mat-paginator>
+<p>
+  @if (!manage) {
+    <button mat-flat-button color="accent" (click)="select()"><mat-icon>done</mat-icon>Choose</button>
+  }
+  @if (!manage) {
+    <button mat-flat-button color="accent" class="sep" (click)="close()">
+      <mat-icon>close</mat-icon>Close
+    </button>
+  }
+</p>

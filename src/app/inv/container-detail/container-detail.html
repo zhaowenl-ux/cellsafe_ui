@@ -1,0 +1,59 @@
+<button mat-icon-button class="close-button" (click)="exit()">
+  <mat-icon class="close-icon" color="warn">close</mat-icon>
+</button>
+<h2 class="title">Cell Vial Details</h2>
+@if (IsWait) {
+  <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+}
+<table>
+  @if(box){
+    <tr>
+      <td>Tank</td>
+      <td>{{box.tank_name}}</td>
+    </tr>
+    } @if(box){
+    <tr>
+      <td>Rack</td>
+      <td>{{box.rack_name}} ({{box.rack_desc}})</td>
+    </tr>
+    } @if(box){
+    <tr>
+      <td>Box</td>
+      <td>{{box.box_name}} ({{box.box_desc}})</td>
+    </tr>
+    } @if(vial){
+    <tr>
+      <td>Position</td>
+      <td>{{position()}})</td>
+    </tr>
+    <tr>
+      <td>Status</td>
+      <td>{{vial.vial_status}}</td>
+    </tr>
+    @if(vial.box_owner_name){
+      <tr>
+        <td>Owner</td>
+        <td>{{vial.box_owner_name}}</td>
+      </tr>
+      } }@else{
+      <tr>
+        <td colspan="2" class="title">Position is not occupied: {{position()}}</td>
+      </tr>
+      } @if (batch){
+      <tr>
+        <td>Batch Name</td>
+        <td>{{batch.batch_name}}</td>
+      </tr>
+      <tr>
+        <td>Accession Name</td>
+        <td>{{batch.accession_name}}</td>
+      </tr>
+      <tr>
+        <td>Cell Name</td>
+        <td>{{batch.cell_name}}</td>
+      </tr>
+    }
+  </table>
+  <p>
+    <button mat-raised-button color="primary" (click)="exit()">Exit</button>
+  </p>

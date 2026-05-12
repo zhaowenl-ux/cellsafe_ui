@@ -1,0 +1,138 @@
+@if (IsWait) {
+  <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+}
+
+<h2>User List</h2>
+<button mat-raised-button color="primary" (click)="edit(-1)">Add New User</button><br>
+<mat-label>Filter</mat-label>
+<input matInput (keyup)="applyFilter($event)" placeholder="Ex. new" #input />
+<div style="width: 3500px">
+  <mat-table
+    style="width: 100%"
+    class="table-container"
+    #table
+    [dataSource]="dataSource"
+    matSort
+    (matSortChange)="announceSortChange($event)">
+    <ng-container matColumnDef="id">
+      <th mat-header-cell *matHeaderCellDef>ID</th>
+      <td mat-cell *matCellDef="let element">
+        <button
+          mat-button
+          matTooltip="Click to edit.view the request"
+          (click)="edit(element.req_id)"
+          style="vertical-align: middle">
+          {{element.id}}
+        </button>
+        <mat-menu #menu="matMenu">
+          <button mat-menu-item (click)="edit(element.id)">
+            <mat-icon>edit</mat-icon>
+            <span>Edit</span>
+          </button>
+          <button mat-menu-item (click)="delete(element.id)">
+            <mat-icon>delete</mat-icon>
+            <span>Delete</span>
+          </button>
+        </mat-menu>
+
+        <button mat-icon-button [matMenuTriggerFor]="menu" matTooltip="Click for more actions">
+          <mat-icon>more_vert</mat-icon>
+        </button>
+      </td>
+    </ng-container>
+    @for (column of columns; track column) {
+      <ng-container [matColumnDef]="column.columnDef">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{column.header}}</th>
+        <td mat-cell *matCellDef="let row">{{column.cell(row)}}</td>
+      </ng-container>
+    }
+
+    <!--ng-container matColumnDef="expand">
+    <th mat-header-cell *matHeaderCellDef aria-label="row actions">&nbsp;</th>
+    <td mat-cell *matCellDef="let element">
+      <!--button mat-icon-button aria-label="expand row" (click)="(expandedElement = expandedElement === element ? null : element); $event.stopPropagation()">
+      @if (expandedElement === element) {
+        <mat-icon>keyboard_arrow_up</mat-icon>
+      } @else {
+        <mat-icon>keyboard_arrow_down</mat-icon>
+      }
+    </button>
+  </td>
+</ng-container-->
+<!--ng-container matColumnDef="expandedDetail">
+<td mat-cell *matCellDef="let element" [attr.colspan]="columnsToDisplayWithExpand.length">
+  <div class="example-element-detail"
+    [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
+    <div>
+      <div><table>
+        <tr>
+          <td> Purpose:</td><td class="data_value">{{element.req_purpose}} </td>
+          <td> Requestor:</td><td class="data_value">{{element.full_display_name}} </td>
+          <td> Project Code:</td><td class="data_value">{{element.external_project_identifier}} </td>
+          <td> Project Phase:</td><td class="data_value">{{element.req_project_phase}} </td>
+          <td> Protein Needed by:</td><td class="data_value">{{element.req_needed_by}} </td>
+          <td> Production Site:</td><td class="data_value">{{element.req_prod_site}} </td>
+          <td> Follow-up Site: </td><td class="data_value">{{element.req_follow_site}} </td>
+          <td> Molbio needed: </td><td class="data_value">{{element.req_dna_new}} </td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+</div>
+</td>
+</ng-container-->
+<tr class="mat-row" *matNoDataRow>
+  <td class="mat-cell" colspan="4">No data matching the filter "{{input.value}}"</td>
+</tr>
+<tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true" class="header"></tr>
+<tr
+  mat-row
+  *matRowDef="let element; let even = even;  columns: displayedColumns;"
+[ngClass]="{gray: even}"></tr>
+<!--tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr-->
+</mat-table>
+
+<mat-paginator #paginator [pageSize]="50" [pageSizeOptions]="[20, 50, 100]" [showFirstLastButtons]="true">
+</mat-paginator>
+</div>
+<button mat-raised-button color="primary" (click)="edit(-1)">Add New User</button>
+<!--button mat-raised-button color="primary" (click)="exportAsExcel()">
+<mat-icon>file_copy</mat-icon>Export as Excel
+</button-->
+@if(bedit){
+  <div class="gray">
+    <form [formGroup]="user_form">
+      <table>
+        <caption class="title">{{edit_title}}</caption>
+        <input type="hidden" formControlName="id">
+        <tr>
+          <td class="required">Full Name</td>
+          <td>
+            <mat-form-field>
+              <input #full_name matInput formControlName="full_name" />
+            </mat-form-field>
+          </td>
+        </tr>
+        <tr>
+          <td class="required">Email</td>
+          <td>
+            <mat-form-field>
+              <input #email matInput formControlName="email" />
+            </mat-form-field>
+          </td>
+        </tr>
+        <tr>
+          <td class="label_row">Alternate ID</td>
+          <td>
+            <mat-form-field>
+              <input matInput formControlName="alt_id" />
+            </mat-form-field>
+          </td>
+        </tr>
+      </table>
+      <button mat-raised-button color="primary" (click)="save_user()">Save</button>
+      <button mat-raised-button color="primary" (click)="cancel_edit()">Cancel</button>
+    </form>
+  </div>
+}

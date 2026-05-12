@@ -1,0 +1,63 @@
+<h2>Cell Line Database: <span class="data_value"> {{label}}</span></h2>
+@if (IsWait) {
+  <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+}
+<mat-label>Filter</mat-label>
+<input matInput (keyup)="applyFilter($event)" placeholder="Ex. new" #input />
+<div style="width: 2500px">
+  <mat-table
+    style="width: 100%"
+    class="table-container"
+    #table
+    [dataSource]="dataSource"
+    matSort
+    (matSortChange)="announceSortChange($event)">
+    <ng-container matColumnDef="id">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>ID</th>
+      <td mat-cell *matCellDef="let element" [ngClass]="{'highlight': row_selected(element.provenance_id)}">
+        <button
+          mat-button
+          matTooltip="Click to edit.view the batch details"
+          (click)="edit(element.id)"
+          style="vertical-align: middle">
+          {{element.id}}
+        </button>
+      </td>
+    </ng-container>
+
+    @for (column of columns; track column) {
+      <ng-container [matColumnDef]="column.columnDef">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{column.header}}</th>
+        <td mat-cell *matCellDef="let row" [ngClass]="{'highlight': row_selected(row.id)}">
+          {{column.cell(row)}}
+        </td>
+      </ng-container>
+    }
+    <tr class="mat-row" *matNoDataRow>
+      <td class="mat-cell" colspan="4">No data matching the filter "{{input.value}}"</td>
+    </tr>
+    <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true" class="header"></tr>
+    <tr
+      mat-row
+      *matRowDef="let element; let even = even;  columns: displayedColumns;"
+      [ngClass]="{gray: even}"
+    (click)="mouseClickHandler( element, $event)"></tr>
+  <!--tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr-->
+</mat-table>
+
+</div>
+@if (me && (me.admin>0 || me.provenance >0)) {
+  <p>
+    <button mat-raised-button color="primary" (click)="add()"><mat-icon>add</mat-icon>Add New Provenance</button>
+  </p>
+}
+<p>
+  @if (do_select) {
+    <button mat-flat-button color="accent" (click)="select()"><mat-icon>done</mat-icon>Choose</button>
+  }
+  @if (do_select) {
+    <button mat-flat-button color="accent" class="sep" (click)="close()">
+      <mat-icon>close</mat-icon>Close
+    </button>
+  }
+</p>

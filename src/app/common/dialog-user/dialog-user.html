@@ -1,0 +1,27 @@
+<h1>{{title}}</h1>
+@if (action=='add_group_member' || action=='add_role_member') {
+  <mat-form-field style="width: 400px">
+    <input
+      type="text"
+      matInput
+      placeholder="User"
+      aria-label="User"
+      [formControl]="user"
+      #autoComplInput
+      [matAutocomplete]="auto" />
+    <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+      @for (option of user_list ; track option) {
+        <mat-option [value]="option"> {{option.name}} </mat-option>
+      }
+    </mat-autocomplete>
+  </mat-form-field>
+}
+@if (action=='dictionary') {
+  <mat-form-field style="width: 400px">
+    <input type="text" matInput [(ngModel)]="term" />
+  </mat-form-field>
+}
+<p>
+  <button mat-fab (click)="apply()">{{action_name}}</button>
+  <button mat-fab (click)="close()">Cancel</button>
+</p>

@@ -1,0 +1,150 @@
+<h2>Cell Line Database: <span class="data_value"> {{label}}</span></h2>
+<mat-progress-spinner mode="indeterminate" *ngIf="IsWait"></mat-progress-spinner>
+<!--
+    id  = -1;             
+    name = "";           
+    disease = "";
+    source_tissue = "";
+    source_type = "";
+    species = 1;  // default human
+    cellosaurus_id = "";
+    reference = "";
+    comments = "";
+    t1 = "";
+    t2 = "";
+    t3 = "";
+
+-->
+    <form [formGroup]="cell_form" >
+<table>
+    <tr>
+        <td class="required">Cell Name</td>
+        <td>
+            <mat-form-field>
+                <input #el_cell_name matInput formControlName="name" />
+            </mat-form-field>
+        </td>
+    </tr>
+    <tr>
+        <td class="label_row">Disease</td>
+        <td>
+            <mat-form-field>
+                <input #fld_cell_disease matInput formControlName="disease" />
+            </mat-form-field>
+        </td>
+    </tr>
+    <tr>
+        <td class="label_row">Source Tissue</td>
+        <td>
+            <mat-form-field>
+                <input matInput formControlName="source_tissue" />
+            </mat-form-field>
+        </td>
+    </tr>
+    <tr>
+        <td class="label_row">Source Type</td>
+        <td>
+            <mat-form-field>
+                <mat-select formControlName="source_type">
+                    <mat-option *ngFor="let type of source_type_list" [value]="type"> {{type}} </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </td>
+    </tr>
+    <tr>
+        <td class="label_row">Source Species</td>
+        <td>
+            <mat-form-field class="long_text">
+                <mat-select formControlName="species">
+                    <mat-option *ngFor="let type of species_list" [value]="type.id"> {{type.name}} </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </td>
+    </tr>
+    <tr>
+        <td class="label_row">Cellosaurus</td>
+        <td>
+            <mat-form-field>
+                <input matInput formControlName="cellosaurus_id" />
+            </mat-form-field>
+            <button *ngIf= cell && cell.cellosaurus_id mat-icon-button (click)="view_cellosaurus()" matTooltip="View Cellosaurus Entry">
+                    <mat-icon>info</mat-icon>
+            </button>
+        </td>
+    </tr>
+    <tr>
+        <td class="label_row">Disease subtype</td>
+        <td>
+            <mat-form-field>
+                <input matInput formControlName="t1" />
+            </mat-form-field>
+        </td>
+    </tr>
+    <tr>
+        <td class="label_row">Patient</td>
+        <td>
+            <mat-form-field>
+                <input matInput formControlName="t2" />
+            </mat-form-field>
+        </td>
+    </tr>
+    <tr>
+        <td class="label_row">Reference Source</td>
+        <td>
+            <mat-form-field>
+                <input matInput formControlName="reference" />
+            </mat-form-field>
+        </td>
+    </tr>
+    <tr>
+        <td class="label_row">Comment</td>
+        <td>
+            <mat-form-field class="long_text" style="height: 100px">
+                <textarea matInput formControlName="comments"></textarea>
+            </mat-form-field>
+        </td>
+    </tr>
+    <!-- Extra Fields -->
+    @if(t1 && t1.display == 'Y'){
+        <tr>
+            <td class="label_row">{{t1.label}}</td>
+            <td>
+                <mat-form-field>
+                    <mat-hint>{{t1.hint}}</mat-hint>
+                    <input matInput formControlName="t1" />
+                </mat-form-field>
+            </td>
+        </tr>
+    }
+    @if(t2 && t2.display == 'Y'){
+        <tr>
+            <td class="label_row">{{t2.label}}</td>
+            <td>
+                <mat-form-field>
+                    <mat-hint>{{t2.hint}}</mat-hint>
+                    <input matInput formControlName="t2" />
+                </mat-form-field>
+            </td>
+        </tr>
+    }
+    @if(t3 && t3.display == 'Y'){
+        <tr>
+            <td class="label_row">{{t3.label}}</td>
+        <td>
+            <mat-form-field>
+                <mat-hint>{{t3.hint}}</mat-hint>
+                <input matInput formControlName="t3" />
+            </mat-form-field>
+        </td>
+    </tr>
+    }
+</table>
+</form>
+
+<button *ngIf="me && (me.admin > 0 || me.cell > 0)" mat-flat-button color="accent" (click)="save()">
+    <mat-icon>save</mat-icon>Save
+</button>
+<button mat-flat-button color="primary" (click)="delete()">
+    <mat-icon>delete</mat-icon>delete</button>
+<button mat-flat-button color="primary" (click)="cell_add()">
+    <mat-icon>add</mat-icon>New Accession</button>

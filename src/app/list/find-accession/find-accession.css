@@ -1,0 +1,13 @@
+@import url('../../../global.css');
+
+.mat-column-accession_action {
+    width: 450px;
+}
+
+.mat-column-basecell_action {
+    width: 350px;
+}
+
+.highlight {
+    background: green; /* green */
+}

@@ -1,0 +1,44 @@
+.example-menu {
+    display: inline-flex;
+    flex-direction: column;
+    min-width: 180px;
+    max-width: 280px;
+    background-color: rgb(255, 255, 255);
+    padding: 6px 0;
+}
+
+.occupied {
+    background-color: pink;
+}
+
+.selected {
+    background-color: greenyellow;
+}
+
+.info {
+    background-color: greenyellow;
+    font-size: small;
+}
+
+.box{
+    width: 150px; 
+    height: 100px; 
+    border: solid;
+    font-size: small;
+}
+
+.example-menu-item {
+  background-color: transparent;
+  cursor: pointer;
+  border: none;
+
+  user-select: none;
+  min-width: 64px;
+  line-height: 36px;
+  padding: 0 16px;
+
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  flex: 1;
+}

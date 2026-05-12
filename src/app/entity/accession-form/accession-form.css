@@ -1,0 +1,55 @@
+.data_value {
+    font-weight: bold;
+    color: brown;
+    margin-right: 20px;
+}
+
+.gray {
+    background-color: #f5f5f5;
+}
+
+.sep {
+    margin-left: 20px;
+}
+
+.header {
+    margin-left: 20px;
+    font-weight: bold;
+    font-size: larger;
+    background-color: yellowgreen;
+    color: darkblue;
+    vertical-align: middle;
+}
+
+.required {
+    color: brown;
+    text-align: right;
+    padding-top: 12px;
+    vertical-align: top;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.label_row {
+    text-align: right;
+    padding-top: 12px;
+    vertical-align: top;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.long_text {
+    width: 1000px;
+}
+
+.mat-column-supplier_name {
+    width: 450px;
+}
+
+.irrelevant {
+    background-color: #aaaaaa;
+}
+
+mat-form-field {
+  width: 350px;    /* Adjust height */
+}

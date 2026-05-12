@@ -1,0 +1,102 @@
+@if (IsWait) {
+  <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+}
+<h1 class="emp">Expired Biosafety - {{expired.length}} entries</h1>
+<div class="over_container">
+  @for (item of expired; track item) {
+    <div class="safety_data red">
+      <table>
+        <caption class="emp">
+          {{item.id}}
+        </caption>
+        <tr>
+          <td class="label">Expiration Date:</td>
+          <td class="data">{{item.expiration_date}}</td>
+        </tr>
+        <tr>
+          <td class="label">Accession:</td>
+          <td class="data">{{item.accession_id}}</td>
+        </tr>
+        <tr>
+          <td class="label">Accession Name:</td>
+          <td class="data">{{item.accession_name}}</td>
+        </tr>
+      </table>
+      <button mat-raised-button color="primary" (click)="open('ACCESSION', item.accession_id)">
+        <mat-icon>edit</mat-icon>
+        <span>Accession</span>
+      </button>
+      <button mat-raised-button color="primary" (click)="open('BIOSAFETY', item.id)">
+        <mat-icon>edit</mat-icon>
+        <span>Biosafety</span>
+      </button>
+    </div>
+  }
+</div>
+<hr />
+<!-- comment -->
+<h1 class="emp">Biosafety expired in one Month - {{one_month.length}} entries</h1>
+<div class="over_container">
+  @for (item of one_month; track item) {
+    <div class="safety_data yellow">
+      <table>
+        <caption class="emp">
+          {{item.id}}
+        </caption>
+        <tr>
+          <td class="label">Expiration Date:</td>
+          <td class="data">{{item.expiration_date}}</td>
+        </tr>
+        <tr>
+          <td class="label">Accession:</td>
+          <td class="data">{{item.accession_id}}</td>
+        </tr>
+        <tr>
+          <td class="label">Accession Name:</td>
+          <td class="data">{{item.accession_name}}</td>
+        </tr>
+      </table>
+      <button mat-raised-button color="primary" (click)="open('ACCESSION', item.accession_id)">
+        <mat-icon>edit</mat-icon>
+        <span>Accession</span>
+      </button>
+      <button mat-raised-button color="primary" (click)="open('BIOSAFETY', item.id)">
+        <mat-icon>edit</mat-icon>
+        <span>Biosafety</span>
+      </button>
+    </div>
+  }
+</div>
+<hr />
+<h1 class="emp">Biosafety expired in three months - {{three_month.length}} entries</h1>
+<div class="over_container">
+  @for (item of three_month; track item) {
+    <div class="safety_data green">
+      <table>
+        <caption class="emp">
+          {{item.id}}
+        </caption>
+        <tr>
+          <td class="label">Expiration Date:</td>
+          <td class="data">{{item.expiration_date}}</td>
+        </tr>
+        <tr>
+          <td class="label">Accession:</td>
+          <td class="data">{{item.accession_id}}</td>
+        </tr>
+        <tr>
+          <td class="label">Accession Name:</td>
+          <td class="data">{{item.accession_name}}</td>
+        </tr>
+      </table>
+      <button mat-raised-button color="primary" (click)="open('ACCESSION', item.accession_id)">
+        <mat-icon>edit</mat-icon>
+        <span>Accession</span>
+      </button>
+      <button mat-raised-button color="primary" (click)="open('BIOSAFETY', item.id)">
+        <mat-icon>edit</mat-icon>
+        <span>Biosafety</span>
+      </button>
+    </div>
+  }
+</div>

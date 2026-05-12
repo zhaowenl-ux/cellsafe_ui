@@ -1,0 +1,95 @@
+.example-accordion {
+    display: block;
+    max-width: 1500px;
+}
+
+.example-accordion-item {
+    display: block;
+    border: solid 1px #ccc;
+}
+
+.example-accordion-item + .example-accordion-item {
+    border-top: none;
+}
+
+.example-accordion-item-header {
+    display: flex;
+    align-items: normal;
+    justify-content: space-between;
+    width: 100%;
+    background: none;
+    border: none;
+    padding: 16px;
+    text-align: left;
+}
+
+.example-accordion-item-button {
+    display: flex;
+    align-items: left;
+    justify-content: space-between;
+    width: 90%;
+    background: none;
+    border: none;
+    padding: 16px;
+    text-align: left;
+}
+.example-accordion-item-description {
+    font-size: 0.85em;
+    color: #999;
+}
+
+.example-accordion-item-body {
+    padding: 16px;
+}
+
+.example-accordion-item-header:hover {
+    cursor: pointer;
+    background-color: #eee;
+}
+
+.example-accordion-item:first-child {
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+}
+
+.example-accordion-item:last-child {
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
+}
+
+.rack {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.box {
+    flex: 1 0 11%; /* explanation below */
+    margin: 5px;
+}
+
+.example-menu {
+    display: inline-flex;
+    flex-direction: column;
+    min-width: 180px;
+    max-width: 280px;
+    background-color: rgb(255, 255, 255);
+    padding: 6px 0;
+}
+
+.title {
+    margin-left: 20px;
+    font-weight: bold;
+    font-size: large;
+    color: blueviolet;
+    margin-right: 20px;
+}
+
+.long_select {
+    width: 300px;
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+button {
+    margin-left: 20px;
+}

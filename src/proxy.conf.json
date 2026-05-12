@@ -1,0 +1,9 @@
+{
+  "/api/**": {
+    "target": "https://cellsafe.home.localdomain/",
+    "secure": false,
+    "pathRewrite": {
+      "^/api": ""
+        }
+    }
+}

@@ -1,0 +1,48 @@
+<p class="header">{{title}}</p>
+<table>
+    <tr>
+        <td class="label_row">Contact Name</td>
+        <td>
+            `<mat-form-field>
+                <input matInput [(ngModel)]="address.name"  />
+            </mat-form-field>
+        </td>
+    </tr>
+    <tr>
+        <td class="label_row">Company</td>
+        <td>
+            <mat-form-field>
+                <input matInput [(ngModel)]="address.company"  />
+            </mat-form-field>
+        </td>
+    </tr>
+    <tr>
+        <td class="label_row">Address</td>
+        <td>
+            <mat-form-field>
+                <textarea  matInput [(ngModel)]="address.address"  >
+                </textarea>
+            </mat-form-field>
+        </td>
+    </tr>
+    <tr>
+        <td class="label_row">Phone</td>
+        <td>
+            <mat-form-field>
+                <input matInput [(ngModel)]="address.phone"  />
+            </mat-form-field>
+        </td>
+    </tr>
+    <tr>
+        <td class="label_row">Email</td>
+        <td>
+            <mat-form-field>
+                <input matInput [(ngModel)]="address.email" />
+            </mat-form-field>
+        </td>
+    </tr>
+    </table>
+    <DIV>
+<button mat-raised-button color="primary" (click)="save()"><mat-icon>save</mat-icon>Save</button>
+<button mat-raised-button color="primary" (click)="cancel()"><mat-icon>cancel</mat-icon>Cancel</button>
+</DIV>  

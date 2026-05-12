@@ -1,0 +1,20 @@
+.mat-stepper-vertical {
+  margin-top: 8px;
+}
+
+.mat-mdc-form-field {
+  margin-top: 16px;
+}
+
+.header {
+    margin-left: 20px;
+    font-weight: bold;
+    font-size: larger;
+    background-color: yellowgreen;
+    color: var(--rich-purple);
+    vertical-align: middle;
+}
+
+mat-form-field {
+  width: 350px;    /* Adjust height */
+}

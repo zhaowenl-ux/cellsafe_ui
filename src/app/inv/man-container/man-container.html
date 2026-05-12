@@ -1,0 +1,93 @@
+@if(IsWait){
+  <mat-progress-spinner mode="indeterminate" ></mat-progress-spinner>
+}
+<div>
+  <mat-form-field class="long_select">
+    <mat-label>Tank</mat-label>
+    <mat-select [(ngModel)]="container_id" (selectionChange)="select_freezer()">
+      @for (tank of tank_list; track tank.id) {
+        <mat-option [value]="tank.id">{{tank.name}}</mat-option>
+      }
+    </mat-select>
+    @if (container_id > 0) {
+      <button matSuffix mat-icon-button aria-label="Clear" (click)="container_id=-1">
+        <mat-icon>close</mat-icon>
+      </button>
+    }
+  </mat-form-field>
+</div>
+@if (container_id>0 && container) {
+  <h2 class="title">
+    Tank: {{container.name}}  @if (container.desc){({{container.desc}})}
+    @if (me && me.admin > 0 && me.batch > 0) {
+      <button
+        mat-flat-button
+        color="accent"
+        (click)="update_name(container.id)">
+        <mat-icon>input</mat-icon>Change Name
+      </button>
+    }
+    @if (me && me.admin > 0 && me.batch > 0) {
+      <button
+        mat-flat-button
+        color="accent"
+        (click)="assign_group(container.id)">
+        <mat-icon>group</mat-icon>Assign Group
+      </button>
+    }
+  </h2>
+}
+<!--div fxLayout="row" fxLayoutAlign="center">
+<app-container fxLayout="row" *ngFor="let container of children" [item]="container"> </app-container>
+</div-->
+
+@if (container_id>0) {
+  <cdk-accordion class="example-accordion">
+    @for (item of children; track item.id; let index = $index) {
+      <cdk-accordion-item #accordionItem="cdkAccordionItem" class="example-accordion-item">
+        <div class="example-accordion-item-header">
+          <mat-menu #menu="matMenu">
+            <button mat-menu-item (click)="assign_group(item.id)">
+              <mat-icon>group</mat-icon>
+              <span>Add Group</span>
+            </button>
+            <button mat-menu-item (click)="assign_name(item.id)">
+              <mat-icon>input</mat-icon>
+              <span>Assign Name</span>
+            </button>
+            <button mat-menu-item (click)="assign_barcode(item.id)">
+              <mat-icon>info</mat-icon>
+              <span>Assign Barcode</span>
+            </button>
+          </mat-menu>
+          <button mat-icon-button [matMenuTriggerFor]="menu" matTooltip="Click for more actions">
+            <mat-icon>more_vert</mat-icon>
+          </button>
+          <button
+            class="example-accordion-item-button"
+            (click)="accordionItem.toggle(); update_rack(item.id)"
+            tabindex="0"
+            [attr.id]="'accordion-header-' + index"
+            [attr.aria-expanded]="accordionItem.expanded"
+            [attr.aria-controls]="'accordion-body-' + index">
+            {{item.desc}} ({{ item.name }})
+            @if(item.barcode){
+              Barcode: {{item.barcode}}
+            }
+            <span class="example-accordion-item-description">
+              Click to {{ accordionItem.expanded ? 'close' : 'open' }}
+            </span>
+          </button>
+        </div>
+        @if(accordionItem.expanded) {
+          <div class="rack">
+            @for (container of box.get(item.id); track container.id; let index = $index) {
+              <app-container-form class="box" [item]="container"> </app-container-form>
+            }
+          </div>
+        }
+      </cdk-accordion-item>
+    }
+  </cdk-accordion>
+}
+

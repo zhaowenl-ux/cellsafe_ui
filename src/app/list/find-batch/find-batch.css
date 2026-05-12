@@ -1,0 +1,19 @@
+@import url('../../../global.css');
+
+mat-paginator {
+  display: flex;
+  justify-content: top left;
+} 
+
+.mat-column-batch_action{
+    width: 350px;
+}
+
+.mat-column-accession_action{
+    width: 350px;
+}
+
+.mat-column-basecell_action{
+    width: 250px;
+}
+

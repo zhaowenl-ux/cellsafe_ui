@@ -1,0 +1,106 @@
+<h2>Cell Line Database: <span class="data_value">{{title}}</span></h2>
+@if (IsWait) {
+  <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+}
+
+@if(action=="manage"){
+  @if (manage) {
+    <button mat-flat-button color="accent" (click)="add_group()">
+      <mat-icon>group_add</mat-icon>Add Access Group
+    </button>
+  }
+}
+
+<div style="width: 3500px">
+  <mat-table
+    style="width: 100%"
+    class="table-container"
+    #table
+    [dataSource]="dataSource"
+    #GroupSort="matSort"
+    matSort
+    (matSortChange)="announceSortChange($event)">
+    <ng-container matColumnDef="member">
+      <th mat-header-cell *matHeaderCellDef>Group Member</th>
+      <td mat-cell *matCellDef="let element" [ngClass]="{'highlight': row_selected(element.group_id)}">
+
+        @if (manage) {
+          <button
+            mat-button
+            matTooltip="Add a new member"
+            (click)="add_member(element.group_id, element.group_name)"
+            style="vertical-align: middle">
+            <mat-icon>group-add</mat-icon>
+          </button>
+        }
+        @if (action== 'manage'){
+          @for (s of element.group_member; track s){ {{s}}@if (manage) {
+            <button
+              mat-button
+              matTooltip="Delete member {{s}}"
+              (click)="delete_member(element.group_id, s)"
+              style="vertical-align: middle">
+              <mat-icon>delete</mat-icon>
+            </button>
+          }
+          }}
+          @else{
+          {{element.group_member.length}} members;
+        }
+      </td>
+    </ng-container>
+
+    @for (column of columns; track column) {
+      <ng-container [matColumnDef]="column.columnDef">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{column.header}}</th>
+        <td mat-cell *matCellDef="let row" [ngClass]="{'highlight': row_selected(row.group_id)}">
+          {{column.cell(row)}}
+        </td>
+      </ng-container>
+    }
+    <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true" class="header"></tr>
+    <tr
+      mat-row
+      *matRowDef="let element; let even = even; let rowIndex = index; columns: displayedColumns;"
+      [ngClass]="{gray: even}"
+    (click)="mouseClickHandler(rowIndex, element, $event)"></tr>
+  <!--tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr-->
+</mat-table>
+
+<mat-paginator #paginator [pageSize]="50" [pageSizeOptions]="[20, 50, 100]" [showFirstLastButtons]="true">
+</mat-paginator>
+</div>
+@if(action == "assign"){
+  <p>
+    <button  mat-flat-button color="accent" (click)="select()"><mat-icon>done</mat-icon>Choose</button>
+    <button  mat-flat-button color="accent" (click)="close()"><mat-icon>close</mat-icon>Close</button>
+  </p>
+}
+
+@if (b_add_group){
+  <div class="gray">
+    <table>
+      <caption class="header">Create a new Group</caption>
+      <tr>
+        <td class="label_row">Group Name</td>
+        <td>
+          `<mat-form-field>
+          <input matInput [(ngModel)]="new_group.group_name"  />
+        </mat-form-field>
+      </td>
+    </tr>
+    <tr>
+      <td class="label_row">Description</td>
+      <td>
+        <mat-form-field style="width: 400px">
+          <input matInput [(ngModel)]="new_group.group_desc"  />
+        </mat-form-field>
+      </td>
+    </tr>
+  </table>
+  <p>
+    <button mat-flat-button color="accent" (click)="do_add_group()"><mat-icon>save</mat-icon>Save</button>
+    <button mat-flat-button color="accent" (click)="cancel_add()"><mat-icon>close</mat-icon>Cancel</button>
+  </p>
+</div>
+}

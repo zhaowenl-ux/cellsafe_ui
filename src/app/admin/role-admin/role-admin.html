@@ -1,0 +1,33 @@
+<h1 class="title">Manage Role : {{role? role.name: ''}}</h1>
+<mat-form-field style="width: 400px">
+  <mat-select #select [formControl]="select_control" (selectionChange)="select_change(select.value)">
+    @for (type of select_list; track type) {
+      <mat-option [value]="type"> {{type.name}} </mat-option>
+    }
+  </mat-select>
+</mat-form-field>
+<hr />
+<button mat-raised-button color="primary" (click)="add_user()">Add Member</button>
+<div width="500px">
+  <mat-table [dataSource]="dataSource" matSort >
+    <!-- Position Column -->
+    <ng-container matColumnDef="id">
+      <mat-header-cell *matHeaderCellDef> {{id_title}} </mat-header-cell>
+      <mat-cell *matCellDef="let element">
+        <button mat-mini-fab (click)="delete(element.id, element.full_name)">
+          <mat-icon>delete</mat-icon>
+        </button>
+        &nbsp;&nbsp;&nbsp; {{element.id}}
+      </mat-cell>
+    </ng-container>
+
+    <!-- Name Column -->
+    <ng-container matColumnDef="full_name">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> {{name_title}} </mat-header-cell>
+      <mat-cell *matCellDef="let element"> {{element.full_name}} </mat-cell>
+    </ng-container>
+
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+  </mat-table>
+</div>

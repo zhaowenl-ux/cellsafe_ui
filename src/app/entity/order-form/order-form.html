@@ -1,0 +1,202 @@
+<h2>Cell Line Database: <span class="data_value"> {{order_label}}</span></h2>
+@if (IsWait) {
+  <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+}
+
+@if (num_flag > 0 && can_approve && order.status == 'NEW'){
+  <div class="flag">
+    <h2>Flags</h2>
+    <ol>
+      @for (s of flag; track s) {
+        <li>{{s}}</li>
+      }
+    </ol>
+  </div>
+}
+<table>
+  <tr>
+    <td class="label_row">Requestor</td>
+    <td>
+      `<mat-form-field>
+      <input matInput [(ngModel)]="order.requestor_name" disabled />
+    </mat-form-field>
+  </td>
+</tr>
+<tr>
+  <td class="label_row">Request Date</td>
+  <td>
+    <mat-form-field>
+      <input matInput [(ngModel)]="order.order_date" disabled />
+    </mat-form-field>
+  </td>
+</tr>
+<tr>
+  <td class="label_row">Cell Line</td>
+  <td>
+    <mat-form-field>
+      <input matInput [(ngModel)]="order.cell_batch_id" disabled />
+    </mat-form-field>
+  </td>
+</tr>
+<tr>
+  <td class="label_row">Vials Needed</td>
+  <td>
+    <mat-form-field>
+      <input matInput [(ngModel)]="order.vial_needed"  type="number" value="1" />
+    </mat-form-field>
+  </td>
+</tr>
+<tr>
+  <td class="label_row">Purpose</td>
+  <td>
+    <mat-form-field>
+      <input matInput [(ngModel)]="order.purpose" />
+    </mat-form-field>
+  </td>
+</tr>
+@if(provenance_config && provenance_config["rule1"].display){
+  <tr>
+    <td colspan="2">
+      <mat-checkbox class="example-margin" [(ngModel)]="order.rule1" class="data_value"
+        ><span class="data_value">{{provenance_config["rule1"].order}}</span></mat-checkbox>
+      </td>
+    </tr>
+  }
+  @if(provenance_config && provenance_config["rule2"].display){
+    <tr>
+      <td colspan="2">
+        <mat-checkbox class="example-margin" [(ngModel)]="order.rule2" class="data_value"
+          ><span class="data_value">{{provenance_config["rule2"].order}}</span></mat-checkbox>
+        </td>
+      </tr>
+    }
+    @if(provenance_config && provenance_config["rule3"].display){
+      <tr>
+        <td colspan="2">
+          <mat-checkbox class="example-margin" [(ngModel)]="order.rule3" class="data_value"
+            ><span class="data_value">{{provenance_config["rule3"].order}}</span></mat-checkbox>
+          </td>
+        </tr>
+      }
+      @if(provenance_config && provenance_config["rule4"].display){
+        <tr>
+          <td colspan="2">
+            <mat-checkbox class="example-margin" [(ngModel)]="order.rule4" class="data_value"
+              ><span class="data_value">{{provenance_config["rule4"].order}}</span></mat-checkbox>
+            </td>
+          </tr>
+        }
+        @if(provenance_config && provenance_config["rule5"].display){
+          <tr>
+            <td colspan="2">
+              <mat-checkbox class="example-margin" [(ngModel)]="order.rule5" class="data_value"
+                ><span class="data_value">{{provenance_config["rule5"].order}}</span></mat-checkbox>
+              </td>
+            </tr>
+          }
+          <tr>
+            <td class="required">Date Needed</td>
+            <td>
+              <mat-form-field>
+                <input
+                  #batch_creation_date
+                  matInput
+                  [matDatepicker]="picker"
+                  [min]="minDate"
+                  [matDatepickerFilter]="excludeWeekends"
+                  [(ngModel)]="order.order_needed" />
+                <mat-hint></mat-hint>
+                <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+              </mat-form-field>
+            </td>
+          </tr>
+          <tr>
+            <td class="label_row">Comments</td>
+            <td>
+              <mat-form-field class="long_text" style="height: 100px">
+                <textarea matInput [(ngModel)]="order.comment" style="height: 100"></textarea>
+              </mat-form-field>
+            </td>
+          </tr>
+          <tr>
+            <td class="label_row">Shipping Address</td>
+            <td>
+              <mat-form-field class="long_text">
+                <input
+                  matInput
+                  placeholder="Contact Name/Company"
+                  aria-label="Contact Name/Company"
+                  [formControl]="shipping_address"
+                  #merck_contact_input
+                  [matAutocomplete]="auto" />
+                <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+                  @for (option of address_list ; track option) {
+                    <mat-option [value]="option"> {{option.name}} </mat-option>
+                  }
+                </mat-autocomplete>
+              </mat-form-field>
+              @if (order.shipping_id > 0){
+                <div>
+                  {{current_address.name}}<br />
+                  {{current_address.company}}<br />
+                  {{current_address.address}}<br />
+                  Phone: {{current_address.phone}}<br />
+                </div>
+              }
+            </td>
+          </tr>
+        </table>
+        @if (id < 0) {
+          <span>
+            <button mat-raised-button color="primary" (click)="save_order()"><mat-icon>save</mat-icon>Save</button>
+          </span>
+        }
+        @if (id > 0) {
+          <span>
+            <button mat-raised-button color="primary" (click)="history()"><mat-icon>history</mat-icon>History</button>
+          </span>
+        }
+        @if (me && order.requestor == me.id && id > 0 && order.status == 'NEW') {
+          <span>
+            <button mat-raised-button color="primary" (click)="save_order()"><mat-icon>save</mat-icon>Update</button>
+            <button mat-raised-button color="primary" (click)="del_order()"><mat-icon>delete</mat-icon>Cancel</button>
+          </span>
+        }
+        @if (me && can_approve && id > 0 && order.status == 'NEW') {
+          <span>
+            <button mat-raised-button color="primary" (click)="approve_order()"><mat-icon>check</mat-icon>Approve</button>
+            <button mat-raised-button color="primary" (click)="deny_order()"><mat-icon>close</mat-icon>Deny</button>
+          </span>
+        }
+        @if (me && can_fill && id > 0 && order.status == 'APPROVED') {
+          <span>
+            <button mat-raised-button color="primary" (click)="fill_order()">
+              <mat-icon>shopping_cart_checkout</mat-icon>Fill
+            </button>
+          </span>
+        }
+        <div style="width: 3500px">
+          @if (me && can_approve && id > 0 && order.status == 'NEW') {
+            <mat-expansion-panel
+              expanded="provenance.length > 0">
+              <mat-expansion-panel-header>
+                <mat-panel-title> <h3>Provenance {{provenance.length}}</h3> </mat-panel-title>
+              </mat-expansion-panel-header>
+              @if (provenance.length > 0) {
+                <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+                  @for (column of provenance_columns; track column) {
+                    <ng-container [matColumnDef]="column.columnDef">
+                      <th mat-header-cell *matHeaderCellDef mat-sort-header>{{column.header}}</th>
+                      <td mat-cell *matCellDef="let row" [ngClass]="{'irrelevant': row.relevance=='N'}">
+                        {{column.cell(row)}}
+                      </td>
+                    </ng-container>
+                  }
+                  <tr mat-header-row *matHeaderRowDef="provenance_displayedColumns"></tr>
+                  <tr mat-row *matRowDef="let row; columns: provenance_displayedColumns;"></tr>
+                </table>
+              }
+            </mat-expansion-panel>
+          }
+        </div>

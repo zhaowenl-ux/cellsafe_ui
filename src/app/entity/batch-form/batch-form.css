@@ -1,0 +1,77 @@
+.data_value {
+    font-weight: bold;
+    color:DodgerBlue;
+    margin-right: 20px;
+}
+
+.gray {
+    background-color: #f5f5f5;
+}
+
+.header {
+    margin-left: 20px;
+    font-weight: bold;
+    font-size: larger;
+    background-color: lightblue;
+    color: rgb(16, 1, 30);
+    vertical-align: middle;
+}
+
+.required {
+    color: tomato;
+    text-align: right;
+    padding-top: 12px;
+    vertical-align: top;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.label_row {
+    text-align: right;
+    padding-top: 12px;
+    vertical-align: top;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.long_text {
+    width: 1000px;
+}
+
+.mat-column-biosafety_qc_assay_name {
+    width: 200px;
+}
+
+.dragarea {
+    width: 800px;
+    font-size: 1.5rem;
+    border: 3px solid #bbb;
+    padding: 1.5rem;
+    background-color: #fff;
+    color: #bbb;
+}
+
+.droparea {
+    width: 800px;
+    font-size: 1.5rem;
+    border: 3px dashed #bbb;
+    padding: 1.5rem;
+    background-color: #eff;
+    color: #aaa;
+}
+
+.no_show {
+    display: none;
+}
+
+.show {
+    display: "";
+}
+
+.file-input {
+    display: none;
+}
+
+mat-form-field {
+  width: 350px;    /* Adjust height */
+}

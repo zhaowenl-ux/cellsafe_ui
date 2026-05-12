@@ -1,0 +1,126 @@
+<div fxLayout fxLayoutAlign="center">
+  <span class="header" cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle>{{label}}</span>
+</div>
+@if (IsWait) {
+  <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+}
+
+<form [formGroup]="p_form">
+  <table>
+    <tr>
+      <td class="label_row">Source</td>
+      <td>
+        <mat-form-field style="width: 600px">
+          <input
+            type="text"
+            matInput
+            placeholder="Contract source"
+            aria-label="Contract source"
+            formControlName="source"
+            #contract_source
+            [matAutocomplete]="source" />
+          <mat-autocomplete #source="matAutocomplete" [displayWith]="displayFn">
+            @for (option of source_list ; track option) {
+              <mat-option [value]="option"> {{option.name}} </mat-option>
+            }
+          </mat-autocomplete>
+        </mat-form-field>
+      </td>
+    </tr>
+    <tr>
+      <td class="label_row">Contract Name</td>
+      <td>
+        <mat-form-field class="long_text">
+          <input matInput formControlName="contract_name" />
+        </mat-form-field>
+      </td>
+    </tr>
+    <tr>
+      <td class="label_row">Contract Expiration</td>
+      <td>
+        <mat-form-field>
+          <input matInput formControlName="contract_expiration" [matDatepicker]="picker2" />
+          <mat-datepicker-toggle matIconSuffix [for]="picker2"></mat-datepicker-toggle>
+          <mat-datepicker #picker2></mat-datepicker>
+        </mat-form-field>
+      </td>
+    </tr>
+    <tr>
+      <td class="label_row">Known Restrictions</td>
+      <td>
+        <mat-form-field class="long_text">
+          <input matInput formControlName="restriction" />
+        </mat-form-field>
+      </td>
+    </tr>
+    @if(config && config["rule1"].display){
+      <tr>
+        <td colspan="2">
+          <mat-checkbox formControlName="rule1"><span class="label_row">{{config["rule1"].name}}</span></mat-checkbox>
+        </td>
+      </tr>
+    }
+    @if(config && config["rule2"].display){
+      <tr>
+        <td colspan="2">
+          <mat-checkbox formControlName="rule2"><span class="label_row">{{config["rule2"].name}}</span></mat-checkbox>
+        </td>
+      </tr>
+    }
+    @if(config && config["rule3"].display){
+      <tr>
+        <td colspan="2">
+          <mat-checkbox formControlName="rule3"><span class="label_row">{{config["rule3"].name}}</span></mat-checkbox>
+        </td>
+      </tr>
+    }
+    @if(config && config["rule4"].display){
+      <tr>
+        <td colspan="2">
+          <mat-checkbox formControlName="rule4"><span class="label_row">{{config["rule4"].name}}</span></mat-checkbox>
+        </td>
+      </tr>
+    }
+    @if(config && config["rule5"].display){
+      <tr>
+        <td colspan="2">
+          <mat-checkbox formControlName="rule5"><span class="label_row">{{config["rule5"].name}}</span></mat-checkbox>
+        </td>
+      </tr>
+    }
+    <tr>
+      <td class="label_row">Source Role</td>
+      <td>
+        <mat-form-field>
+          <mat-select formControlName="source_role">
+            @for (type of source_role_list; track type) {
+              <mat-option [value]="type"> {{type}} </mat-option>
+            }
+          </mat-select>
+
+        </mat-form-field>
+      </td>
+    </tr>
+    <tr>
+      <td class="label_row">Description</td>
+      <td>
+        <mat-form-field class="long_text">
+          <input matInput formControlName="contract_desc" />
+        </mat-form-field>
+      </td>
+    </tr>
+    <tr>
+      <td class="label_row">Comment</td>
+      <td>
+        <mat-form-field class="long_text">
+          <input matInput formControlName="comment" />
+        </mat-form-field>
+      </td>
+    </tr>
+  </table>
+</form>
+@if (me && (me.admin || me.provenance)) {
+  <button mat-raised-button color="primary" (click)="save()">
+    <mat-icon>save</mat-icon>Save
+  </button>
+}

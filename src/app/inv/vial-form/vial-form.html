@@ -1,0 +1,55 @@
+<div
+  class="box"
+  [cdkContextMenuTriggerFor]="cont"
+  [ngClass]="container_class()"
+  style="background-color: {{item.color}}"
+  (click)="sel_vial()">
+  @if (item.barcode){
+    Barcode: {{item.barcode}}<br>
+  }
+  @if (item.mat_id > 0) {
+    Cell Batch:
+    <a href="{{APP_PREFIX}}/batch/{{item.mat_id}}" target="_blank"> {{item.mat_id}}</a> <br>
+    {{trim_name()}}<br />
+    } x={{item.x}}, y={{item.y}}
+
+  </div>
+  <ng-template #cont>
+    <div class="example-menu" cdkMenu>
+      @if (item.vial_id > 0){
+        <button cdkMenuItem class="example-menu-item" (click)="assign_barcode()">
+          <mat-icon>info</mat-icon>
+          <span>Assign Barcode</span>
+        </button>
+      }
+
+
+      <!--button cdkMenuItem class="example-menu-item" [matMenuTriggerFor]="list_list" *ngIf="item.class_id == 'BOTTLE' && item.material_id >0">
+      <mat-icon>add</mat-icon>
+      <span>Add to list</span>
+    </button-->
+
+    <button cdkMenuItem class="example-menu-item" (click)="view_detail()">
+      <mat-icon>details</mat-icon>
+      <span>Container Detail</span>
+    </button>
+    @if (item.mat_id <0) {
+      <button cdkMenuItem class="example-menu-item" (click)="add_cell()">
+        <mat-icon>add_box</mat-icon>
+        <span>Store Cell Batch</span>
+      </button>
+    }
+    @if (item.mat_id >0) {
+      <button cdkMenuItem class="example-menu-item" (click)="checkout()">
+        <mat-icon>add_box</mat-icon>
+        <span>Check out</span>
+      </button>
+    }
+    @if (item.mat_id <0) {
+      <button cdkMenuItem class="example-menu-item" (click)="checkin()">
+        <mat-icon>local_convenience_store</mat-icon>
+        <span>Check in</span>
+      </button>
+    }
+  </div>
+</ng-template>

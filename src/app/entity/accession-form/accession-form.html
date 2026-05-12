@@ -1,0 +1,414 @@
+<h2>Cell Line Database: <span class="data_value"> {{accession_label}}</span></h2>
+@if (IsWait) {
+  <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+}
+<!---
+1. cell_id
+2. name
+3. eln
+4. date_received
+5. date_discarded
+6. cell_source
+7. catalog_num
+8. engineering_source
+engineering_method
+9. reporter
+10. tag
+11.
+12. pool_name
+13. clone_name
+14. passage
+15. status
+16. contact_person
+17. comments
+18. t1
+19. t2
+20. t3
+
+-->
+<form [formGroup]="accession_form">
+  <table>
+    <tr>
+      <td class="required">Cell ID</td>
+      <td>
+        <mat-form-field>
+          <input
+            #el_basecell_id
+            matInput
+            type="number"
+            formControlName="cell_id"
+            (click)="select_cell()"
+            readonly />
+        </mat-form-field>
+        @if (accession && accession.cell_id) {
+          <button mat-icon-button (click)="view_cell()">
+            <mat-icon>info</mat-icon>
+          </button>
+        }
+      </td>
+      <td class="label_row">Passage #</td>
+      <td>
+        <mat-form-field>
+          <input matInput type="number" formControlName="passage" />
+        </mat-form-field>
+      </td>
+    </tr>
+    <tr>
+      <td class="required">Accession Name</td>
+      <td>
+        <mat-form-field>
+          <input #el_accession_name matInput formControlName="name" />
+        </mat-form-field>
+      </td>
+      <td class="label_row">ELN</td>
+      <td>
+        <mat-form-field>
+          <input  matInput formControlName="eln" />
+        </mat-form-field>
+      </td>
+    </tr>
+    <tr>
+      <td class="label_row">Date Received</td>
+      <td>
+        <mat-form-field>
+          <input matInput [matDatepicker]="picker" formControlName="date_received" />
+          <mat-hint></mat-hint>
+          <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+      </td>
+      <td class="label_row">Discard Date</td>
+      <td>
+        <mat-form-field>
+          <input #el_date_discarded matInput [matDatepicker]="picker2" formControlName="date_discarded" />
+          <mat-hint></mat-hint>
+          <mat-datepicker-toggle matIconSuffix [for]="picker2"></mat-datepicker-toggle>
+          <mat-datepicker #picker2></mat-datepicker>
+        </mat-form-field>
+      </td>
+    </tr>
+    <tr>
+      <td class="label_row">Cell Line Source</td>
+      <td>
+        <mat-form-field style="width: 300px">
+          <input
+            type="text"
+            matInput
+            placeholder="Cell line source"
+            aria-label="Cell line supplier"
+            formControlName = "cell_source"
+            #ac_cell_line_source
+            [matAutocomplete]="auto_cell_source" />
+          <mat-autocomplete #auto_cell_source="matAutocomplete" [displayWith]="displayFn">
+            @for (option of cell_source_list ; track option) {
+              <mat-option [value]="option">
+                {{option.name}}
+              </mat-option>
+            }
+          </mat-autocomplete>
+        </mat-form-field>
+      </td>
+      <td class="label_row">Source Catalog #</td>
+      <td>
+        <mat-form-field>
+          <input #source_catalog_num matInput formControlName="catalog_num" />
+        </mat-form-field>
+      </td>
+    </tr>
+    <tr>
+      <td class="label_row">Engineer Source</td>
+      <td>
+        <mat-form-field style="width: 300px">
+          <input
+            type="text"
+            matInput
+            placeholder="Engineer source"
+            aria-label="Engineer source"
+            formControlName="engineering_source"
+            #ac_engineering_source
+            [matAutocomplete]="auto_eng_source" />
+          <mat-autocomplete #auto_eng_source="matAutocomplete" [displayWith]="displayFn">
+            @for (option of eng_source_list; track option) {
+              <mat-option [value]="option">
+                {{option.name}}
+              </mat-option>
+            }
+          </mat-autocomplete>
+        </mat-form-field>
+      </td>
+      <td class="label_row">Engineer Method</td>
+      <td>
+        <mat-form-field style="width: 300px">
+          <input
+            type="text"
+            matInput
+            placeholder="Engineer Method"
+            aria-label="Engineer Method"
+            formControlName="engineering_method"
+            [matAutocomplete]="auto_eng_method" />
+          <mat-autocomplete #auto_eng_method="matAutocomplete" [displayWith]="displayFn">
+            @for (option of eng_method_list ; track option) {
+              <mat-option [value]="option">
+                {{option.name}}
+              </mat-option>
+            }
+          </mat-autocomplete>
+        </mat-form-field>
+      </td>
+    </tr>
+    <tr>
+      <td class="label_row">Reporter</td>
+      <td>
+        <mat-form-field>
+          <mat-select formControlName="reporter">
+            @for (type of reporter_list; track type) {
+              <mat-option [value]="type.id"> {{type.name}} </mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      </td>
+      <td class="label_row">Tag</td>
+      <td>
+        <mat-form-field>
+          <mat-select formControlName="tag">
+            @for (type of tag_list; track type) {
+              <mat-option [value]="type.id"> {{type.name}} </mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      </td>
+    </tr>
+    <tr>
+      <td class="label_row">Pool Name</td>
+      <td>
+        <mat-form-field>
+          <input matInput formControlName="pool_name" />
+        </mat-form-field>
+      </td>
+      <td class="label_row">Clone Name</td>
+      <td>
+        <mat-form-field>
+          <input matInput formControlName="clone_name" />
+        </mat-form-field>
+      </td>
+    </tr>
+    <tr>
+      <td class="label_row">Contact Person</td>
+      <td>
+        <mat-form-field style="width: 300px">
+          <input
+            type="text"
+            matInput
+            placeholder="Contact Person"
+            aria-label="Contact Person"
+            formControlName="contact_person"
+            #el_contact_person
+            [matAutocomplete]="auto_contact" />
+          <mat-autocomplete #auto_contact="matAutocomplete" [displayWith]="displayUser">
+            @for (option of contact_list; track option) {
+              <mat-option [value]="option">
+                {{option.name}}
+              </mat-option>
+            }
+          </mat-autocomplete>
+        </mat-form-field>
+      </td>
+      <td class="label_row">Status</td>
+      <td>
+        <mat-form-field>
+          <mat-select formControlName="status" (selectionChange)="check_status()">
+            @for (type of status_list; track type) {
+              <mat-option [value]="type"> {{type}} </mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      </td>
+    </tr>
+    <tr>
+      <td class="label_row">Comments</td>
+      <td colspan="3">
+        <mat-form-field class="long_text">
+          <textarea matInput style="height: 100px" formControlName="comments"></textarea>
+        </mat-form-field>
+      </td>
+    </tr>
+  </table>
+</form>
+@if (me && (me.admin > 0 || me.accession >0 )) {
+  <button mat-raised-button color="primary" (click)="save_accession()">
+    <mat-icon>save</mat-icon>Save
+  </button>
+}
+@if (me && (me.admin > 0 || me.accession >0 )) {
+  <button mat-raised-button color="primary" (click)="accession_addbatch()">
+    <mat-icon>add</mat-icon>Add New Batch
+  </button>
+}
+<hr>
+  @if (accession_gene_list && accession_gene_list.length > 0){
+    <div><span class="label_row">Gene:</span>
+    @for (gene of accession_gene_list; track gene.id) {
+      <button mat-icon-button (click)="delete_gene(gene.id, gene.gene_symbol)" matTooltip="Delete {{gene.gene_symbol}}">
+        <mat-icon>delete</mat-icon>
+      </button>
+      {{gene.gene_symbol}} @if (gene.modification){({{gene.modification}})}
+    }
+  </div>
+}
+<mat-form-field style="width: 200px">
+  <mat-label>Gene</mat-label>
+  <input
+    type="text"
+    matInput
+    placeholder="Gene"
+    aria-label="Gene"
+    [formControl]="gene_id"
+    [matAutocomplete]="auto" />
+  @if (gene_id.value) {
+    <button matSuffix mat-icon-button aria-label="Clear" (click)="gene_id.setValue('')">
+      <mat-icon>close</mat-icon>
+    </button>
+  }
+  <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayGene">
+    @for (gene of gene_list ; track gene) {
+      <mat-option [value]="gene"> {{gene.name}} </mat-option>
+    }
+  </mat-autocomplete>
+</mat-form-field>
+
+<mat-form-field style="margin-left: 20px;">
+  <mat-label>Gene Modification</mat-label>
+  <input matInput [formControl]="gene_modification" />
+</mat-form-field>
+@if (me && (me.admin > 0 || me.accession >0 )) {
+  <button mat-raised-button color="primary" (click)="add_gene()">
+    <mat-icon>save</mat-icon>Add Gene
+  </button>
+}
+
+<hr />
+<div>
+  @if (id > 0) {
+    <mat-expansion-panel expanded="provenance.length > 0">
+      <mat-expansion-panel-header>
+        <mat-panel-title> <h3>Provenance</h3> </mat-panel-title>
+      </mat-expansion-panel-header>
+      @if (me && (me.admin > 0 || me.accession >0 )) {
+        <button
+          mat-flat-button
+          color="accent"
+          (click)="add_provenance()">
+          <mat-icon>library_books</mat-icon>Add Provenance
+        </button>
+      }
+      @if (prio_dirty) {
+        <button class="sep" mat-flat-button color="accent" (click)="save_provenance_prio()">
+          <mat-icon>save</mat-icon>Save Priority
+        </button>
+      }
+      @if (provenance.length > 0) {
+        <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+          <!--- Note that these columns can be defined in any order.
+          The actual rendered columns are set as a property on the row definition" -->
+          <ng-container matColumnDef="source">
+            <th mat-header-cell *matHeaderCellDef>Source</th>
+            <td
+              mat-cell
+              *matCellDef="let element, let  i = index"
+              [ngClass]="{'irrelevant': !element.relevent}">
+              <mat-menu #menu="matMenu">
+                <button mat-menu-item (click)="open_provenance(element.id)">
+                  <mat-icon>edit</mat-icon>
+                  <span>Edit/View</span>
+                </button>
+                @if (me && (me.admin >0  || me.accession >0) && ! element.relevent) {
+                  <button
+                    mat-menu-item
+                    (click)="set_relevent(i,'Y')">
+                    <mat-icon>check</mat-icon>
+                    <span>Set Relevant</span>
+                  </button>
+                }
+                @if (me && (me.admin >0 || me.accession >0) && element.relevent) {
+                  <button
+                    mat-menu-item
+                    (click)="set_relevent(i,'N')">
+                    <mat-icon>close</mat-icon>
+                    <span>Set Irrelevant</span>
+                  </button>
+                }
+                <!--button mat-menu-item (click)="accession_provenance(element.accession_id)">
+                <mat-icon>copyright</mat-icon>
+                <span>Attach Provenance</span>
+              </button-->
+              @if (me && (me.admin || me.accession) ) {
+                <button mat-menu-item (click)="del_provenance(element.id)">
+                  <mat-icon>delete</mat-icon>
+                  <span>Delete</span>
+                </button>
+              }
+            </mat-menu>
+            <button mat-icon-button [matMenuTriggerFor]="menu" matTooltip="Click for more actions">
+              <mat-icon>more_vert</mat-icon>
+            </button>
+            <button mat-button (click)="open_provenance(element.provenance_id)">
+              {{element.source_name}}
+            </button>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="revelent">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Relevant</th>
+          <td mat-cell *matCellDef="let element" [ngClass]="{'irrelevant': ! element.relevent}">
+            <mat-checkbox [value]="element.revelent"></mat-checkbox>
+          </td>
+        </ng-container>
+        @for (column of provenance_columns; track column) {
+          <ng-container [matColumnDef]="column.columnDef">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>{{column.header}}</th>
+            <td mat-cell *matCellDef="let row" [ngClass]="{'irrelevant': !row.relevent}">
+              {{column.cell(row)}}
+            </td>
+          </ng-container>
+        }
+        <tr mat-header-row *matHeaderRowDef="provenance_displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: provenance_displayedColumns;"></tr>
+      </table>
+    }
+  </mat-expansion-panel>
+}
+</div>
+
+@if (id > 0 && biosafety) {
+  <mat-expansion-panel>
+    <mat-expansion-panel-header>
+      <mat-panel-title> <h3>Biosafety</h3> </mat-panel-title>
+    </mat-expansion-panel-header>
+    <app-biosafety-form [item]="biosafety"></app-biosafety-form>
+  </mat-expansion-panel>
+}
+
+@if (batch_list && batch_list.length > 0) {
+  <mat-expansion-panel>
+    <mat-expansion-panel-header>
+      <mat-panel-title> <h3>Batch List</h3> </mat-panel-title>
+    </mat-expansion-panel-header>
+    @if (batch_list && batch_list.length > 0) {
+      <table
+        mat-table
+        [dataSource]="batch_dataSource"
+        class="mat-elevation-z8"
+        >
+        <!--- Note that these columns can be defined in any order.
+        The actual rendered columns are set as a property on the row definition" -->
+        @for (column of columns; track column) {
+          <ng-container [matColumnDef]="column.columnDef">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>{{column.header}}</th>
+            <td mat-cell *matCellDef="let row">{{column.cell(row)}}</td>
+          </ng-container>
+        }
+        <tr mat-header-row *matHeaderRowDef="batch_displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: batch_displayedColumns;"></tr>
+      </table>
+    }
+  </mat-expansion-panel>
+}

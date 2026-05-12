@@ -1,0 +1,20 @@
+.label_row {
+    text-align: right;
+    padding-top: 12px;
+    vertical-align: top;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+mat-form-field {
+  width: 500px;    /* Adjust height */
+}
+
+.header {
+    margin-left: 20px;
+    font-weight: bold;
+    font-size: larger;
+    background-color: lightblue;
+    color: rgb(16, 1, 30);
+    vertical-align: middle;
+}

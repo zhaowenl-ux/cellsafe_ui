@@ -1,0 +1,128 @@
+<mat-menu #menu="matMenu">
+  <button mat-menu-item [matMenuTriggerFor]="find">
+    <mat-icon>search</mat-icon>
+    <span>Search</span>
+  </button>
+  <button mat-menu-item [matMenuTriggerFor]="view">
+    <mat-icon>visibility</mat-icon>
+    <span>View</span>
+  </button>
+  @if( me && (me.admin>0 || me.cell>0 || me.batch>0 || me.accession>0)) {
+    <button
+      mat-menu-item
+      [matMenuTriggerFor]="register">
+      <mat-icon>build</mat-icon>
+      <span>Register</span>
+    </button>
+  }
+  <button mat-menu-item [matMenuTriggerFor]="manage">
+    <mat-icon>pan_tool</mat-icon>
+    <span>Manage</span>
+  </button>
+  @if (me && (me.admin> 0 || me.batch > 0)) {
+    <button mat-menu-item [matMenuTriggerFor]="inventory">
+      <mat-icon>store</mat-icon>
+      <span>Inventory</span>
+    </button>
+  }
+  <mat-divider></mat-divider>
+  <button mat-menu-item [matMenuTriggerFor]="settings">
+    <mat-icon>settings</mat-icon>
+    <span>Settings</span>
+  </button>
+  <button mat-menu-item [matMenuTriggerFor]="dashboard">
+    <mat-icon>dashboard</mat-icon>
+    <span>Dashboard</span>
+  </button>
+  <button mat-menu-item (click)="help()">
+    <mat-icon>help</mat-icon>
+    <span>Help</span>
+  </button>
+</mat-menu>
+
+<mat-menu #settings="matMenu">
+  <button mat-menu-item (click)="set('system')">System Settings</button>
+  <button mat-menu-item (click)="set('batch_field')">Batch Fields</button>
+  <button mat-menu-item (click)="set('accession_field')">Accession Fields</button>
+<!--button mat-menu-item  (click)="admin('prov')">Provenance</button>
+<button mat-menu-item (click)="admin('list')">List</button-->
+</mat-menu>
+
+<mat-menu #manage="matMenu">
+  @if (me && me.admin >0) {
+    <button mat-menu-item  (click)="admin('user')">User</button>
+    <button mat-menu-item  (click)="admin('role')">Role</button>
+    <button mat-menu-item  (click)="admin('group')">Group</button>
+    <button mat-menu-item  (click)="manage_item('dictionary')">Dictionary</button>
+
+  }
+  @if (me && (me.admin>0 || me.provenance>0)) {
+    <button mat-menu-item  (click)="admin('prov')">Provenance</button>
+  }
+  @if (me && (me.admin>0 || me.batch>0)) {
+    <button mat-menu-item  (click)="admin('order')">Order</button>
+    <button mat-menu-item  (click)="admin('address')">Shipping Address</button>
+  }
+</mat-menu>
+
+<mat-menu #dashboard="matMenu">
+  <button mat-menu-item (click)="dash('overview')">Cellline Overview</button>
+  <button mat-menu-item (click)="dash('biosafety')">Biosafety</button>
+  <button mat-menu-item (click)="dash('report/tank_use')">Tank Usage Report</button>
+</mat-menu>
+
+<mat-menu #find="matMenu">
+  <button mat-menu-item (click)="search('batch')">Batch</button>
+  <button mat-menu-item (click)="search('accession')">Accession</button>
+  @if (me && (me.admin>0 || me.cell>0)){
+    <button  mat-menu-item (click)="search('cell')">Cell</button>
+  }
+</mat-menu>
+
+<mat-menu #view="matMenu">
+  <button mat-menu-item (click)="goto('batch')">Batch</button>
+  <button mat-menu-item (click)="goto('accession')">Accession</button>
+  <button mat-menu-item (click)="goto('cell')">Cell</button>
+</mat-menu>
+
+<mat-menu #register="matMenu">
+
+  @if (me && (me.admin > 0 ||me.batch>0)) {
+    <button mat-menu-item (click)="register_entity('batch')">Batch</button>
+  }
+  @if (me && (me.admin > 0 || me.accession>0 )) {
+    <button mat-menu-item (click)="register_entity('accession')">Accession</button>
+  }
+  @if (me && (me.admin > 0 || me.cell > 0)) {
+    <button mat-menu-item (click)="register_entity('cell')">Cell</button>
+  }
+
+</mat-menu>
+
+<mat-menu #inventory="matMenu">
+  @if (me && me.admin > 0) {
+    <button mat-menu-item (click)="inv('add_freezer')">
+      Create new Freezer/Tank
+    </button>
+  }
+
+  @if (me && (me.admin> 0 || me.batch > 0)) {
+    <button mat-menu-item (click)="inv('man_freezer')">
+      Manage Freezer/Tanks
+    </button>
+  }
+
+  @if( me && (me.admin> 0 || me.batch > 0)) {
+    <button mat-menu-item (click)="inv('man_inv')">
+      Manage Cell Inventory
+    </button>
+  }
+
+</mat-menu>
+
+<button mat-icon-button [matMenuTriggerFor]="menu">
+  <mat-icon>menu</mat-icon>
+</button>
+
+<span class="title">{{ title() }}</span>
+<router-outlet></router-outlet>

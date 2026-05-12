@@ -1,0 +1,491 @@
+<h2>Cell Line Database: <span class="data_value"> {{batch_label}}</span></h2>
+@if (IsWait){
+  <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+}
+<!--
+id = -1;
+accession_id = -1;
+name = "";
+alt_name = "";
+parent_batch = -1;
+material_state = "";
+cells_per_vial = 0;
+cells_per_ml = 0;
+passage = -1;
+eln = "";
+contact_person = -1;
+contact_person_name = "";
+culture_type = "";
+culture_protocol = "";
+dissociation_solution = "";
+medium_growth = "";
+medium_growth_suppl = "";
+medium_freezing = "";
+comments = "";
+t1 = "";
+t2 = "";
+t3 = "";
+t4 = "";
+created_at =""
+-->
+<div class="warning">
+  @for ( p of provenance; track p.id){ @if (warning(p)){
+    <a href="provenance/{{p.id}}" target="_blank">Provenance {{p.id}}</a>:{{warning(p)}}<br />
+    } }
+  </div>
+  <form [formGroup]="batch_form">
+    <table>
+      <tr>
+        <td class="required">Name</td>
+        <td>
+          <mat-form-field>
+            <input #batch_name: matInput formControlName="name" />
+          </mat-form-field>
+        </td>
+        <td class="label_row">Alt. ID</td>
+        <td>
+          <mat-form-field>
+            <input #alternate_id matInput formControlName="alt_name" />
+          </mat-form-field>
+        </td>
+      </tr>
+      <tr>
+        <td class="required">Accession ID</td>
+        <td>
+          <mat-form-field>
+            <input matInput type="number" formControlName="accession_id" (click)="select_accession()" readonly />
+          </mat-form-field>
+          @if (batch && batch.accession_id) {
+            <button mat-icon-button (click)="view_accession()">
+              <mat-icon>info</mat-icon>
+            </button>
+          }
+        </td>
+        <td class="label_row">Passage Number</td>
+        <td>
+          <mat-form-field>
+            <input #passage_number matInput type="number" formControlName="passage" />
+          </mat-form-field>
+        </td>
+      </tr>
+      <tr>
+        <td class="label_row">Parent Batch</td>
+        <td>
+          <mat-form-field>
+            <input #parent_batch matInput type="number" formControlName="parent_batch" />
+          </mat-form-field>
+          @if (batch && batch.parent_batch) {
+            <button mat-icon-button (click)="view_parent_batch()">
+              <mat-icon>info</mat-icon>
+            </button>
+          }
+          <button  mat-icon-button (click)="remove_parent_batch()">
+            <mat-icon>remove_circle</mat-icon>
+          </button>
+        </td>
+        <td class="label_row">Batch Created on</td>
+        <td>
+          <mat-form-field>
+            <input
+              #batch_creation_date
+              matInput
+              [matDatepicker]="picker"
+              formControlName="created_at" />
+            <mat-hint></mat-hint>
+            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+          </mat-form-field>
+        </td>
+      </tr>
+      <tr>
+        <td class="label_row">ELN</td>
+        <td>
+          <mat-form-field>
+            <input #eln matInput formControlName="eln" />
+          </mat-form-field>
+        </td>
+        <td class="label_row">Culture Type</td>
+        <td>
+          <mat-form-field>
+            <!--input #culture_type matInput formControlName="culture_type" /-->
+            <mat-select formControlName="culture_type">
+              @for (type of culture_type_list; track type) {
+                <mat-option [value]="type"> {{type}} </mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+        </td>
+      </tr>
+      <tr>
+        <td class="label_row">Growth Medium</td>
+        <td colspan="3">
+          <mat-form-field class="long_text">
+            <input #growth_medium matInput formControlName="medium_growth" />
+          </mat-form-field>
+        </td>
+      </tr>
+      <tr>
+        <td class="label_row">Growth medium suppl.</td>
+        <td colspan="3">
+          <mat-form-field class="long_text">
+            <mat-label>Give concentration or percentage for supplement, Include FBS Lot #</mat-label>
+            <input #growth_medium_supplement matInput formControlName="medium_growth_suppl" />
+          </mat-form-field>
+        </td>
+      </tr>
+      <tr>
+        <td class="label_row">Freezing medium</td>
+        <td colspan="3">
+          <mat-form-field class="long_text">
+            <mat-label>e.g. Supplier (catalogue #, lot #)</mat-label>
+            <input #freezing_medium matInput formControlName="medium_freezing" />
+          </mat-form-field>
+          <button mat-icon-button (click)='help("FBS")' matTooltip="Please enter Supplier(Catalogue #, lot#)">
+            <mat-icon>info</mat-icon>
+          </button>
+        </td>
+      </tr>
+      <tr>
+        <td class="label_row">Culture Protocol</td>
+        <td colspan="3">
+          <mat-form-field class="long_text">
+            <mat-label>e.g. 37C, 5% CO2</mat-label>
+            <input #culture_protocol matInput formControlName="culture_protocol" />
+          </mat-form-field>
+        </td>
+      </tr>
+      <tr>
+        <td class="label_row">Dissociation solution</td>
+        <td colspan="3">
+          <mat-form-field class="long_text">
+            <input #dissociation_solution matInput formControlName="dissociation_solution" />
+          </mat-form-field>
+        </td>
+      </tr>
+      <tr>
+        <td class="required">Contact Person</td>
+        <td>
+          <mat-form-field style="width: 300px">
+            <input
+              type="text"
+              matInput
+              placeholder="Contact person"
+              aria-label="Contact Person"
+              formControlName="contact_person"
+              #contact_person_input
+              [matAutocomplete]="auto" />
+            <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+              @for (option of contact_list ; track option) {
+                <mat-option [value]="option"> {{option.name}} </mat-option>
+              }
+            </mat-autocomplete>
+          </mat-form-field>
+        </td>
+        <td class="label_row">Material State</td>
+        <td>
+          <mat-form-field>
+            <!--input #material_state matInput formControlName="material_state" /-->
+            <mat-select formControlName="material_state">
+              @for (type of material_state_list; track type) {
+                <mat-option [value]="type"> {{type}} </mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+        </td>
+      </tr>
+      <tr>
+        <td class="label_row">Cell per vial</td>
+        <td>
+          <mat-form-field>
+            <input #cells_per_vial matInput type="number" formControlName="cells_per_vial" />
+          </mat-form-field>
+        </td>
+        <td class="label_row">Cell per ml</td>
+        <td>
+          <mat-form-field>
+            <input #cells_per_ml matInput type="number" formControlName="cells_per_ml" />
+          </mat-form-field>
+        </td>
+      </tr>
+
+      <!--tr>
+      <td class="label_row">Freezing Medium FBS</td>
+      <td colspan="3">
+        <mat-form-field class="long_text">
+          <mat-label>e.g. Supplier (catalogue #, lot #)</mat-label>
+          <input #culture_protocol matInput formControlName="text1" />
+        </mat-form-field>
+        <button
+          mat-icon-button
+          (click)='help("FBS")'
+          matTooltip="Please enter Supplier(Catalogue #, lot#)">
+          <mat-icon>info</mat-icon>
+        </button>
+      </td>
+    <!--td class="label_row">Access Group</td>
+    <td>
+      <mat-form-field>
+        <input matInput type="number" [formControl]="access_group" (click)="select_group()" readonly />
+      </mat-form-field>
+    </td>
+  </tr-->
+  <tr>
+    <td class="label_row">Batch Comment</td>
+    <td colspan="3">
+      <mat-form-field class="long_text">
+        <textarea matInput style="height: 100px" formControlName="comments"></textarea>
+      </mat-form-field>
+    </td>
+  </tr>
+</table>
+</form>
+@if (me && (me.admin > 0 || me.batch > 0)) {
+  <button mat-raised-button color="primary" (click)="save_batch()">
+    <mat-icon>save</mat-icon>Save
+  </button>
+}
+&nbsp;&nbsp;&nbsp;
+@if (me && (me.admin > 0 || me.batch > 0) && inv_list && inv_list.length == 0) {
+  <button
+    mat-raised-button
+    color="primary"
+    (click)="delete_batch()">
+    <mat-icon>delete</mat-icon>Delete
+  </button>
+}
+&nbsp;&nbsp;&nbsp;
+@if (vial_count > 0) {
+  <button
+    mat-raised-button
+    color="primary"
+    (click)="batch_order()">
+    <mat-icon>add_shopping_cart</mat-icon>Order
+  </button>
+}
+@if(me && (me.batch > 0 || me.admin > 0) && id > 0){
+  <button mat-raised-button (click)="batch_store(batch.id, batch.name)">
+    <mat-icon>kitchen</mat-icon>
+    <span>Store Cell</span>
+  </button>
+}
+&nbsp;&nbsp;&nbsp;
+<button mat-raised-button color="primary" (click)="close()"><mat-icon>close</mat-icon>Close</button>
+&nbsp;&nbsp;&nbsp;
+@if (id > 0 && inv_list && inv_list.length > 0) {
+  <button mat-raised-button color="primary" (click)="batch_order()">
+    <mat-icon>add_shopping_cart</mat-icon>
+    <span>Order Cell</span>
+  </button>
+}
+<mat-expansion-panel style="width: 3000px">
+  <mat-expansion-panel-header>
+    <mat-panel-title>
+      <h3>QC Assays</h3>
+    </mat-panel-title>
+  </mat-expansion-panel-header>
+  <button mat-raised-button color="primary" (click)="add_assay()"><mat-icon>add</mat-icon>Add New Assay</button>
+  <mat-table
+    #table_assay
+    [dataSource]="dataSource"
+    class="mat-elevation-z8"
+    #PlasmidSort="matSort"
+    matSort
+    style="width: 1500px">
+    <ng-container matColumnDef="id">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Action</th>
+      <td mat-cell *matCellDef="let element">
+        @if(element.id > 0){
+          <span>
+            <button mat-icon-button (click)="assay_edit(element)">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button mat-icon-button (click)="delete_assay(element.id)">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </span>
+        }
+      </td>
+    </ng-container>
+    @for (column of assay_columns; track column) {
+      <ng-container [matColumnDef]="column.columnDef">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{column.header}}</th>
+        <td mat-cell *matCellDef="let row">
+          <!--(mouseover)="highlight_plasmid(row, $event)"-->
+          @if (!row.isEdit || column.editable === 'N') {
+            <div>
+              @switch (column.type) {
+                <!--div class="btn-edit" *ngSwitchCase="'isEdit'">
+                <button mat-button (click)="assay_edit(row)">Edit</button>
+              </div-->
+              @default {
+                <span> {{ row[column.columnDef] }} </span>
+              }
+            }
+          </div>
+        }
+        @if (row.isEdit) {
+          <div>
+            @if (column.type === 'isEdit') {
+              <div class="btn-edit">
+                <button mat-button (click)="assay_edit(row)">Save</button>
+              </div>
+            }
+            @if (column.editable === 'Y') {
+              <div class="btn-edit">
+                <mat-form-field style="column.style">
+                  <input [type]="column.type" matInput [(ngModel)]="row[column.columnDef]" />
+                </mat-form-field>
+              </div>
+            }
+            @if (column.editable === 'assay_name') {
+              <div class="btn-edit">
+                <mat-form-field style="width:350px;">
+                  <mat-select [formControl]="assay_name">
+                    @for (type of assay_name_list; track type) {
+                      <mat-option [value]="type"> {{type}} </mat-option>
+                    }
+                  </mat-select>
+                </mat-form-field>
+              </div>
+            }
+            @if (column.editable === 'pass_fail') {
+              <div class="btn-edit">
+                <mat-form-field style="width: 100px">
+                  <mat-select [formControl]="assay_pass">
+                    @for (type of pass_fail_list; track type) {
+                      <mat-option [value]="type"> {{type}} </mat-option>
+                    }
+                  </mat-select>
+                </mat-form-field>
+              </div>
+            }
+            @if (column.editable === 'date') {
+              <div class="btn-edit">
+                <mat-form-field style="width: 150px">
+                  <input matInput [matDatepicker]="picker_date" [formControl]="assay_exp_date" readonly />
+                  <mat-hint>MM/DD/YYYY</mat-hint>
+                  <mat-datepicker-toggle matIconSuffix [for]="picker_date"></mat-datepicker-toggle>
+                  <mat-datepicker #picker_date></mat-datepicker>
+                </mat-form-field>
+              </div>
+            }
+            @if (column.editable === 'op') {
+              <div class="btn-edit">
+                <mat-form-field style="width: 75px">
+                  <mat-select [formControl]="assay_op">
+                    @for (type of op_list; track type) {
+                      <mat-option [value]="type"> {{type}} </mat-option>
+                    }
+                  </mat-select>
+                </mat-form-field>
+              </div>
+            }
+          </div>
+        }
+      </td>
+    </ng-container>
+  }
+
+  <tr mat-header-row *matHeaderRowDef="assay_displayedColumns; sticky: true" class="header"></tr>
+  <tr
+    mat-row
+    *matRowDef="let element; columns: assay_displayedColumns; let rowIndex = index; let even=even"
+    class="example-element-row"
+  [ngClass]="{gray:even}"></tr>
+</mat-table>
+</mat-expansion-panel>
+
+<mat-expansion-panel expanded="attach_file_list &&  attach_file_list.length > 0">
+  <mat-expansion-panel-header>
+    <mat-panel-title> <h3>Attached File</h3> </mat-panel-title>
+  </mat-expansion-panel-header>
+  @if (attach_file_list && attach_file_list.length > 0){ @for(file of attach_file_list; track file.id){
+    <div>
+      @if (me && (me.admin || me.batch)) {
+        <button mat-button color="warn" (click)="delete_file(file.id, file.file_name)">
+          <mat-icon>delete</mat-icon><span>Delete</span>
+        </button>
+      }
+      <a href="{{VIEW_FILE}}{{file.id}}" target="_blank"> {{file.file_name}}</a>
+    </div>
+    } }
+    @if (me && (me.admin || me.batch)) {
+      <div draggable="true" ngClass="{{dragAreaClass}}">
+        <div class="row">
+          <div class="col-md-12 text-center">
+            Drag files here
+            <a href="javascript:void(0)" (click)="file.click()"> or click to open </a>
+            <input type="file" #file [multiple]="true" (change)="onFileChange($event)" style="display: none" />
+          </div>
+        </div>
+      </div>
+    }
+    @if (batch_file &&  batch_file.length > 0) {
+      <div>
+        <h3>Total {{batch_file.length}} file</h3>
+        <p></p>
+        <ul>
+          @for (f of batch_file; track f; let i = $index) {
+            <li style="width: 800px; display: block">
+              {{f.name}} ({{f.size}} bytes)
+              <button mat-icon-button color="warn" (click)="remove_file(i)"><mat-icon>close</mat-icon></button>
+            </li>
+          }
+        </ul>
+        <p>
+          <button mat-flat-button (click)="load_multiple()"><mat-icon>create</mat-icon>Load</button>
+        </p>
+      </div>
+    }
+  </mat-expansion-panel>
+
+  @if (id > 0 && inv_list && inv_list.length > 0) {
+    <mat-expansion-panel
+      expanded="inv_list &&  inv_list.length > 0">
+      <mat-expansion-panel-header>
+        <mat-panel-title> <h3>Inventory</h3> </mat-panel-title>
+      </mat-expansion-panel-header>
+      <button mat-flat-button (click)="checkout_all()"><mat-icon>remove_circle</mat-icon>Checkout all bottles</button>
+      <table border="1">
+        <tr>
+          <td>#</td>
+          <td>Cell</td>
+          <td>Comment</td>
+          <td>Freezer</td>
+          <td>Freezer Desc.</td>
+          <td>Rack</td>
+          <td>Rack Desc.</td>
+          <td>Box</td>
+          <td>Box Desc.</td>
+          <td>X</td>
+          <td>Y</td>
+        </tr>
+        @for (inv of inv_list; track inv.vial_id; let i = $index) {
+          <tr>
+            <td>
+              {{i+1}}
+              @if (inv.is_visible == 'Y') {
+                <button mat-flat-button (click)="checkout(inv.vial_id)">
+                  <mat-icon>remove_circle</mat-icon>Checkout
+                </button>
+              }
+            </td>
+            <td>{{inv.cell_batch_name}}</td>
+            @if(! (inv.is_visible == 'Y')){
+              <td colspan="9">Please contact {{inv.box_owner_name}}</td>
+              }@else{
+              <td></td>
+              <td>{{inv.tank_name}}</td>
+              <td>{{inv.tank_desc}}</td>
+              <td>{{inv.rack_name}}</td>
+              <td>{{inv.rack_desc}}</td>
+              <td>{{inv.box_name}}</td>
+              <td>{{inv.box_desc}}</td>
+              <td>{{inv.x}}</td>
+              <td>{{inv.y}}</td>
+            }
+          </tr>
+        }
+      </table>
+    </mat-expansion-panel>
+  }

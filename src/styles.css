@@ -1,0 +1,18 @@
+/* You can add global styles to this file, and also import other style files */
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif;font-size: 12px; }
+
+mat-paginator {
+    display: flex;
+    justify-content: left;
+}
+
+mat-header-cell {
+    margin-left: 20px;
+    font-weight: bold;
+    font-size: larger;
+    background-color: yellowgreen;
+    color: darkblue;
+    vertical-align: middle;
+}

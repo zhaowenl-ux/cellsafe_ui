@@ -1,0 +1,36 @@
+<div (click)="view_box()"
+    class="box"
+    [cdkContextMenuTriggerFor]="cont">
+    {{item.name}}<br>
+    @if (item.desc){
+        {{item.desc}}<br>
+    }
+    @if (item.barcode){
+        Barcode: {{item.barcode}}<br>
+    }
+    @if (item.n1){
+        Owned by {{item.t1}}
+    }
+</div>
+<ng-template #cont>
+    <div class="example-menu" cdkMenu>
+        <button cdkMenuItem class="example-menu-item" (click)="assign_group()">
+            <mat-icon>group</mat-icon>
+            <span>Add Group</span>
+        </button>
+        <button cdkMenuItem class="example-menu-item" (click)="assign_name()">
+            <mat-icon>input</mat-icon>
+            <span>Assign Name</span>
+        </button>
+        <button cdkMenuItem class="example-menu-item" (click)="assign_barcode()">
+            <mat-icon>info</mat-icon>
+            <span>Assign Barcode</span>
+        </button>
+        @if (item.type == 'BOX'){
+            <button cdkMenuItem class="example-menu-item" (click)="view_box()">
+                <mat-icon>open_in_new</mat-icon>
+                <span>View Box</span>
+            </button>
+        }
+    </div>
+</ng-template>

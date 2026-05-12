@@ -1,0 +1,9 @@
+.title{
+    font-weight: bold;
+    font-size: larger;
+    color: darkblue;
+}
+
+.mat-column-user_id{
+    width: 100px;
+}

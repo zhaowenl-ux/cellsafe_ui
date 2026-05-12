@@ -1,0 +1,24 @@
+.data_value {
+    font-weight: bold;
+    color:darkBlue;
+    vertical-align: middle;
+    font-size: 16px;
+    margin-left: 20px;
+}
+
+.header {
+    margin-left: 20px;
+    font-weight: bold;
+    font-size: larger;
+    background-color: lightblue;
+    color: rgb(16, 1, 30);
+    vertical-align: middle;
+}
+
+.label_row {
+    text-align: right;
+    padding-top: 12px;
+    vertical-align: middle;
+    font-size: 16px;
+    font-weight: bold;
+}
